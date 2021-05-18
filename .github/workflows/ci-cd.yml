@@ -110,8 +110,7 @@ jobs:
         id: create_nuget_package
         shell: pwsh
         run: |
-          nuget pack CleanArchitecture.nuspec`
-          -OutputDirectory "Artifacts"
+          nuget pack CleanArchitecture.nuspec -OutputDirectory Artifacts
 
       - name: Run ls
         id: run_ls
