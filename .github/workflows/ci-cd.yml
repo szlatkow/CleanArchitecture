@@ -67,7 +67,6 @@ jobs:
         uses: mathieudutour/github-tag-action@v5.4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: false
           release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
 
       - name: Build solution
