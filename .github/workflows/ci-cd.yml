@@ -18,72 +18,72 @@ jobs:
           $defaultBranch = Invoke-RestMethod -Method GET -Uri https://api.github.com/repos/$repo | Select-Object -ExpandProperty default_branch
           Write-Output "::set-output name=default_branch::$(echo $defaultBranch)"
 
-      # - name: Conditionals handler
-      #   id: conditionals_handler
-      #   shell: pwsh
-      #   run: |
-      #     $defaultBranch = "${{ steps.data_gatherer.outputs.default_branch }}"
-      #     $githubRef = "${{ github.ref }}"
-      #     $githubEventName = "${{ github.event_name }}"
-      #     $isDefaultBranch = 'false'
-      #     $isPush = 'false'
-      #     $isPushToDefaultBranch = 'false'
-      #     if ( $githubRef -like "*$defaultBranch*" ) {
-      #       $isDefaultBranch = 'true'
-      #     }
-      #     if ( $githubEventName -eq 'push' ) {
-      #       $isPush = 'true'
-      #     }
-      #     if ( $githubRef -like "*$defaultBranch*" -and $githubEventName -eq 'push' ) {
-      #       $isPushToDefaultBranch = 'true'
-      #     }
-      #     Write-Output "::set-output name=is_default_branch::$(echo $isDefaultBranch)"
-      #     Write-Output "::set-output name=is_push::$(echo $isPush)"
-      #     Write-Output "::set-output name=is_push_to_default_branch::$(echo $isPushToDefaultBranch)"
+      - name: Conditionals handler
+        id: conditionals_handler
+        shell: pwsh
+        run: |
+          $defaultBranch = "${{ steps.data_gatherer.outputs.default_branch }}"
+          $githubRef = "${{ github.ref }}"
+          $githubEventName = "${{ github.event_name }}"
+          $isDefaultBranch = 'false'
+          $isPush = 'false'
+          $isPushToDefaultBranch = 'false'
+          if ( $githubRef -like "*$defaultBranch*" ) {
+            $isDefaultBranch = 'true'
+          }
+          if ( $githubEventName -eq 'push' ) {
+            $isPush = 'true'
+          }
+          if ( $githubRef -like "*$defaultBranch*" -and $githubEventName -eq 'push' ) {
+            $isPushToDefaultBranch = 'true'
+          }
+          Write-Output "::set-output name=is_default_branch::$(echo $isDefaultBranch)"
+          Write-Output "::set-output name=is_push::$(echo $isPush)"
+          Write-Output "::set-output name=is_push_to_default_branch::$(echo $isPushToDefaultBranch)"
 
-      # - name: Setup .NET Core
-      #   id: setup_dotnet_core
-      #   uses: actions/setup-dotnet@v1
-      #   with:
-      #     dotnet-version: 5.0.201
+      - name: Setup .NET Core
+        id: setup_dotnet_core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.201
 
-      # - name: Checkout repository
-      #   id: checkout_repo
-      #   uses: actions/checkout@v2
-      #   with:
-      #     fetch-depth: 0
+      - name: Checkout repository
+        id: checkout_repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      # - name: Filter changes
-      #   id: filter_changes
-      #   uses: dorny/paths-filter@v2
-      #   with:
-      #     filters: |
-      #       is_change_in_project_source:
-      #         - 'CleanArchitecture.nuspec'
+      - name: Filter changes
+        id: filter_changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            is_change_in_project_source:
+              - 'CleanArchitecture.nuspec'
 
       # - if: steps.conditionals_handler.outputs.is_push_to_default_branch == 'true' && steps.filter_changes.outputs.is_change_in_project_source == 'true'
-      #   name: Bump GH tag
-      #   id: tag_generator
-      #   uses: mathieudutour/github-tag-action@v5.4
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     default_bump: false
-      #     release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
+      - name: Bump GH tag
+        id: tag_generator
+        uses: mathieudutour/github-tag-action@v5.4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: false
+          release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
 
-      # - name: Build solution
-      #   id: build_solution
-      #   shell: pwsh
-      #   run: |
-      #     dotnet build .\Clean.Architecture.sln --configuration Release
+      - name: Build solution
+        id: build_solution
+        shell: pwsh
+        run: |
+          dotnet build .\Clean.Architecture.sln --configuration Release
 
-      # - name: Run unit tests
-      #   id: run_unit_tests
-      #   shell: pwsh
-      #   run: |
-      #     dotnet test .\Clean.Architecture.sln --configuration Release --no-build
+      - name: Run unit tests
+        id: run_unit_tests
+        shell: pwsh
+        run: |
+          dotnet test .\Clean.Architecture.sln --configuration Release --no-build
 
   cd:
-    # if: needs.ci.outputs.latest_version != ''
+#    if: needs.ci.outputs.latest_version != ''
     name: Continuous Deployment
     needs: ci
     runs-on: ubuntu-latest
@@ -110,11 +110,19 @@ jobs:
         id: create_nuget_package
         shell: pwsh
         run: |
-          $gitNewVersion = if ("${{ steps.tag_generator.outputs.new_version }}") {"${{ steps.tag_generator.outputs.new_version }}"} else {$null}
+          $gitNewVersion = if ("${{ needs.ci.outputs.latest_version }}") {"${{ needs.ci.outputs.latest_version }}"} else {$null}
           $projectCurrentVersion = ([xml](Get-Content .\CleanArchitecture.nuspec)).package.metadata.version
           $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
           nuget pack CleanArchitecture.nuspec -OutputDirectory Artifacts -Version $projectNewVersion
-          
+
       - name: Run ls
         id: run_ls
         run: ls -R
+
+      # - if: needs.ci.outputs.latest_version != ''
+      #   name: Upload artifacts
+      #   id: upload_artifacts
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: Ardalis.CleanArchitecture.Templatev${{ steps.tag_generator.outputs.new_version }}
+      #     path:
