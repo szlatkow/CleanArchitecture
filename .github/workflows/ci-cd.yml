@@ -110,8 +110,11 @@ jobs:
         id: create_nuget_package
         shell: pwsh
         run: |
-          nuget pack CleanArchitecture.nuspec -OutputDirectory Artifacts
-
+          $gitNewVersion = if ("${{ steps.tag_generator.outputs.new_version }}") {"${{ steps.tag_generator.outputs.new_version }}"} else {$null}
+          $projectCurrentVersion = ([xml](Get-Content .\CleanArchitecture.nuspec)).package.metadata.version
+          $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
+          nuget pack CleanArchitecture.nuspec -OutputDirectory Artifacts -Version 3.2.1
+          
       - name: Run ls
         id: run_ls
         run: ls -R
