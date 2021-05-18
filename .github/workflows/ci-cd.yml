@@ -110,19 +110,16 @@ jobs:
         id: create_nuget_package
         shell: pwsh
         run: |
-          $gitNewVersion = if ("${{ needs.ci.outputs.latest_version }}") {"${{ needs.ci.outputs.latest_version }}"} else {$null}
-          $projectCurrentVersion = ([xml](Get-Content .\CleanArchitecture.nuspec)).package.metadata.version
-          $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
-          nuget pack CleanArchitecture.nuspec -OutputDirectory Artifacts -Version $projectNewVersion
+          nuget pack CleanArchitecture.nuspec -OutputDirectory Artifacts -Version ${{ needs.ci.outputs.latest_version }}
 
       - name: Run ls
         id: run_ls
         run: ls -R
 
-      # - if: needs.ci.outputs.latest_version != ''
-      #   name: Upload artifacts
-      #   id: upload_artifacts
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: Ardalis.CleanArchitecture.Templatev${{ steps.tag_generator.outputs.new_version }}
-      #     path:
+      - if: needs.ci.outputs.latest_version != ''
+        name: Upload artifacts
+        id: upload_artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: Ardalis.CleanArchitecture.Template.${{ needs.ci.outputs.latest_version }}
+          path: Artifacts\
