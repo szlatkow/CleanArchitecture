@@ -52,14 +52,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Filter changes
-        id: filter_changes
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            is_change_in_project_source:
-              - 'CleanArchitecture.nuspec'
-
       - if: steps.conditionals_handler.outputs.is_push_to_default_branch == 'true' 
         name: Bump GH tag
         id: tag_generator
@@ -68,18 +60,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
           release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
-
-      - name: Build solution
-        id: build_solution
-        shell: pwsh
-        run: |
-          dotnet build .\Clean.Architecture.sln --configuration Release
-
-      - name: Run unit tests
-        id: run_unit_tests
-        shell: pwsh
-        run: |
-          dotnet test .\Clean.Architecture.sln --configuration Release --no-build
 
   cd:
     if: needs.ci.outputs.latest_version != ''
@@ -131,20 +111,3 @@ jobs:
       #     repo-owner:  'tanaka-takayoshi'
       #     gh-user:  'tanaka-takayoshi'
       #     token:  ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload artifacts
-        id: upload_artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: Ardalis.CleanArchitecture.Template.${{ needs.ci.outputs.latest_version }}
-          path: Artifacts/
-
-      - name: Create and publish release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: ${{ needs.ci.outputs.latest_version }}
-          tag_name: ${{ needs.ci.outputs.latest_version }}
-          files: Artifacts/Ardalis.CleanArchitecture.Template.${{ needs.ci.outputs.latest_version }}.nupkg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
