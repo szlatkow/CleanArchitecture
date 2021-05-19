@@ -99,9 +99,9 @@ jobs:
         id: publish_to_nuget
         shell: pwsh
         run: |
-          nuget setApiKey  ${{secrets.NUGET_API_KEY}}
           nuget push Ardalis.CleanArchitecture.Template.*.nupkg`
           -source https://api.nuget.org/v3/index.json 
+          nuget setApiKey  ${{secrets.NUGET_API_KEY}}
 
       # - name: Publish to NuGet
       #   id: publish_to_nuget
