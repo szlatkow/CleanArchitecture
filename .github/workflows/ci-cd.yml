@@ -98,9 +98,10 @@ jobs:
         id: publish_to_nuget
         shell: pwsh
         run: |
-          nuget push Ardalis.CleanArchitecture.Template.*.nupkg `
-          -source https://api.nuget.org/v3/index.json `
-          -setApiKey  ${{secrets.NUGET_API_KEY}}
+          dotnet nuget push Ardalis.CleanArchitecture.Template.*.nupkg `
+          --api-key  ${{secrets.NUGET_API_KEY}} `
+          --source https://api.nuget.org/v3/index.json
+          
 
       - name: Upload artifacts
         id: upload_artifacts
