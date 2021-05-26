@@ -54,10 +54,10 @@ jobs:
         id: create_nuget_package
         shell: pwsh
         run: |
-          dotnet pack .\Clean.Architecture.sln `
+          dotnet pack .\src\Clean.Architecture.Core\Clean.Architecture.Core.csproj `
           -property:NuspecFile="${{ github.workspace }}/CleanArchitecture.nuspec" `
           -property:NuspecBasePath="${{ github.workspace }}/" `
-          --version-suffix "1.1.1" `
+          -property:PackageVersion="1.1.1" `
           --output Artifacts/
 
 
