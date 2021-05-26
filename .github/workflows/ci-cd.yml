@@ -56,12 +56,12 @@ jobs:
         run: |
           nuget pack CleanArchitecture.nuspec `
           -OutputDirectory Artifacts `
-          -Version "${{ needs.ci.outputs.latest_version }}"
+          -Version 1.1.1
 
       - name: Upload artifacts
         id: upload_artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: Ardalis.CleanArchitecture.Template.${{ needs.ci.outputs.latest_version }}
+          name: Ardalis.CleanArchitecture.Template.1.1.1
           path: Artifacts/
 
