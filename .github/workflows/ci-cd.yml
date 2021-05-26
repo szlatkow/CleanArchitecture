@@ -54,9 +54,12 @@ jobs:
         id: create_nuget_package
         shell: pwsh
         run: |
-          nuget pack CleanArchitecture.nuspec `
-          -OutputDirectory Artifacts `
-          -Version 1.1.1
+          dotnet pack .\Clean.Architecture.sln `
+          -property:NuspecFile="${{ github.workspace }}/CleanArchitecture.nuspec" `
+          -property:NuspecBasePath="${{ github.workspace }}/" `
+          -property:PackageVersion=1.1.1 `
+          --output Artifacts/
+
 
       - name: Upload artifacts
         id: upload_artifacts
