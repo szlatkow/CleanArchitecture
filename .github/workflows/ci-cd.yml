@@ -57,7 +57,7 @@ jobs:
           dotnet pack .\Clean.Architecture.sln `
           -property:NuspecFile="${{ github.workspace }}/CleanArchitecture.nuspec" `
           -property:NuspecBasePath="${{ github.workspace }}/" `
-          -property:PackageVersion=1.1.1 `
+          -property:PackageVersion="1.1.1" `
           --output Artifacts/
 
 
