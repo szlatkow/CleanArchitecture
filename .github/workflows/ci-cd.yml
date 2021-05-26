@@ -106,16 +106,12 @@ jobs:
         run: |
           nuget pack CleanArchitecture.nuspec `
           -OutputDirectory Artifacts `
-          -Version "${{ needs.ci.outputs.latest_version }}"
+          -Version ${{ needs.ci.outputs.latest_version }}
 
       - name: Publish to NuGet
         id: publish_to_nuget
         shell: pwsh
         run: |
-          $version = ${{ needs.ci.outputs.latest_version }}
-          $version2 = "${{ needs.ci.outputs.latest_version }}"
-          $githubRef = '${{ github.ref }}'
-          $githubRef2 = "${{ github.ref }}"
           dotnet nuget push Artifacts/Ardalis.CleanArchitecture.Template.${{ needs.ci.outputs.latest_version }}.nupkg `
           --source https://api.nuget.org/v3/index.json `
           --api-key ${{secrets.NUGET_API_KEY}}
