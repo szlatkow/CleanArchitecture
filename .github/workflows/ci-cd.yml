@@ -114,7 +114,7 @@ jobs:
         run: |
           $version = ${{ needs.ci.outputs.latest_version }}
           $version2 = "${{ needs.ci.outputs.latest_version }}"
-          $githubRef = ${{ github.ref }}
+          $githubRef = '${{ github.ref }}'
           $githubRef2 = "${{ github.ref }}"
           dotnet nuget push Artifacts/Ardalis.CleanArchitecture.Template.${{ needs.ci.outputs.latest_version }}.nupkg `
           --source https://api.nuget.org/v3/index.json `
