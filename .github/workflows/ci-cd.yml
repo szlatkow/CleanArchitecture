@@ -112,7 +112,7 @@ jobs:
         id: publish_to_nuget
         shell: pwsh
         run: |
-          dotnet nuget push Artifacts/Ardalis.CleanArchitecture.Template."${{ needs.ci.outputs.latest_version }}".nupkg `
+          dotnet nuget push Artifacts/Ardalis.CleanArchitecture.Template.${{ needs.ci.outputs.latest_version }}.nupkg `
           --source https://api.nuget.org/v3/index.json `
           --api-key ${{secrets.NUGET_API_KEY}}
 
