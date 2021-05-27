@@ -10,4 +10,6 @@ jobs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
     steps:
       - name: Run NuGet
-        run: nuget
+        run: |
+          get-command nuget
+          (get-command nuget).path
