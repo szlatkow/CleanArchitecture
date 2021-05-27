@@ -10,6 +10,7 @@ jobs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
     steps:
       - name: Run NuGet
+        shell: pwsh
         run: |
           get-command nuget
           (get-command nuget).path
