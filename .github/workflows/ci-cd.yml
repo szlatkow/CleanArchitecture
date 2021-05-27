@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Run NuGet
         run: |
-          sudo pushd /usr/bin/nuget
+          ls -R /usr/bin/nuget
