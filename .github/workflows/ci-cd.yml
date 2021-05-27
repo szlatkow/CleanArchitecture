@@ -11,5 +11,16 @@ jobs:
     steps:
       - name: Run NuGet
         run: |
-          cd /usr/bin/nuget/
-          ls -a -G -l
+          cd /usr/bin/
+          file * 
+   #       ls -a -G -l
+
+      - name: Test
+        run: |
+          cd /usr/bin/
+          ls -lhtrpG --group-directories-first --color=always
+          
+      - name: Test2
+        run: |
+          cd /usr/bin/
+          ls -F
