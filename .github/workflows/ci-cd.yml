@@ -11,4 +11,5 @@ jobs:
     steps:
       - name: Run NuGet
         run: |
-          ls -R /usr/bin/nuget
+          cd /usr/bin/nuget
+          ls -R
