@@ -9,38 +9,5 @@ jobs:
     outputs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
     steps:
-      - name: Setup .NET Core
-        id: setup_dotnet_core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.201
-
-      - name: Setup NuGet
-        id: setup_nuget
-        uses: nuget/setup-nuget@v1
-        with:
-          nuget-version: '5.x'
-          
-      - name: Checkout repository
-        id: checkout_repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Create NuGet Package
-        id: create_nuget_package
-        shell: pwsh
-        run: |
-          dotnet pack .\src\Clean.Architecture.Core\Clean.Architecture.Core.csproj `
-          -property:NuspecFile="${{ github.workspace }}/CleanArchitecture.nuspec" `
-          -property:NuspecBasePath="${{ github.workspace }}/" `
-          -property:PackageVersion="1.1.1" `
-          --output Artifacts/
-
-
-      - name: Upload artifacts
-        id: upload_artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: Ardalis.CleanArchitecture.Template.1.1.1
-          path: Artifacts/
-
+      - name: Run NuGet
+        run: nuget
