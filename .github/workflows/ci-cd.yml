@@ -12,4 +12,4 @@ jobs:
       - name: Run NuGet
         run: |
           cd /usr/bin/
-          ls -R
+          ls -a -G -l
