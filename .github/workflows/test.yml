@@ -72,7 +72,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet test .\Clean.Architecture.sln --configuration Release --no-build
-
+ 
   cd:
     if: needs.ci.outputs.latest_version != ''
     name: Continuous Deployment
